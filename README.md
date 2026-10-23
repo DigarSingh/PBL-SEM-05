@@ -1,4 +1,4 @@
-# ShopSmart
+# ShopSmart - Real Time E-commerce & Order Management Platform
 
 AI-powered e-commerce and order management platform for an Indian electronics store: a storefront
 with natural-language search and personalised recommendations, a checkout with Razorpay and Cash on
