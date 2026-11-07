@@ -1,0 +1,34 @@
+# Production profile. Every secret must be provided by the environment / secret manager.
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: ${DATABASE_POOL_SIZE:20}
+      minimum-idle: 5
+
+server:
+  tomcat:
+    threads:
+      max: ${SERVER_MAX_THREADS:200}
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:false}
+  swagger-ui:
+    enabled: ${API_DOCS_ENABLED:false}
+
+logging:
+  structured:
+    format:
+      # JSON (Elastic Common Schema) log lines for log aggregation.
+      console: ecs
+  level:
+    root: INFO
+    com.shopsmart: INFO
+    org.hibernate.SQL: WARN
+
+app:
+  security:
+    cookie-secure: true
+    require-email-verification: true
+  seed:
+    enabled: false

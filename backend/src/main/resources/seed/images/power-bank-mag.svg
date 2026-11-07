@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Magnetic wireless power bank">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdf2f8"/><stop offset="1" stop-color="#ede9fe"/></linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e2e8f0"/></linearGradient>
+    <filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="26" stdDeviation="26" flood-color="#4c1d95" flood-opacity="0.22"/></filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <g filter="url(#s)">
+    <rect x="235" y="220" width="330" height="360" rx="70" fill="url(#body)"/>
+    <circle cx="400" cy="400" r="112" fill="none" stroke="#c4b5fd" stroke-width="14"/>
+    <circle cx="400" cy="400" r="70" fill="none" stroke="#ddd6fe" stroke-width="6"/>
+    <rect x="392" y="266" width="16" height="30" rx="6" fill="#a78bfa"/>
+    <text x="400" y="545" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="600" fill="#6d28d9">10000 mAh · MagDock</text>
+  </g>
+</svg>

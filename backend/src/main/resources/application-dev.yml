@@ -1,0 +1,24 @@
+# Local development profile (the default when no profile is set).
+spring:
+  config:
+    # Load KEY=VALUE pairs from a local .env file so `./mvnw spring-boot:run` picks up
+    # the same variables docker compose uses. The file is git-ignored.
+    import: optional:file:../.env[.properties],optional:file:.env[.properties]
+  mail:
+    # Mailpit (docker compose service) captures all mail locally: http://localhost:8025
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    properties:
+      mail.smtp.auth: ${MAIL_SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${MAIL_STARTTLS:false}
+
+logging:
+  level:
+    com.shopsmart: DEBUG
+
+app:
+  security:
+    # Browsers treat http://localhost as a secure context, but keep this off for plain-HTTP LAN testing.
+    cookie-secure: ${COOKIE_SECURE:false}
+  seed:
+    enabled: ${SEED_ENABLED:true}

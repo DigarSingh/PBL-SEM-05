@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="GaN desktop charging station">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ecfeff"/><stop offset="1" stop-color="#e0f2fe"/></linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#020617"/></linearGradient>
+    <filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="28" stdDeviation="26" flood-color="#0c4a6e" flood-opacity="0.3"/></filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <g filter="url(#s)">
+    <rect x="200" y="250" width="400" height="300" rx="42" fill="url(#body)"/>
+    <g fill="#0b1220" stroke="#334155" stroke-width="3">
+      <rect x="240" y="410" width="58" height="26" rx="13"/><rect x="318" y="410" width="58" height="26" rx="13"/>
+      <rect x="396" y="410" width="58" height="26" rx="13"/><rect x="474" y="404" width="86" height="38" rx="6"/>
+    </g>
+    <text x="400" y="340" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="700" fill="#e0f2fe">140W GaN</text>
+    <rect x="240" y="480" width="320" height="10" rx="5" fill="#22d3ee" fill-opacity="0.8"/>
+  </g>
+</svg>
