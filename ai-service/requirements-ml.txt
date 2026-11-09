@@ -1,0 +1,3 @@
+# Semantic embeddings. Installing these enables sentence-transformers; without them the service
+# uses TF-IDF embeddings automatically. In Docker, torch is installed from the CPU-only index.
+sentence-transformers>=3.0
