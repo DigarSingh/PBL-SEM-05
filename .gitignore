@@ -1,6 +1,35 @@
+# Build output
 target/
+frontend/dist/
+node_modules/
+
+# Local runtime data (uploads, legacy H2 files, logs)
+data/
 uploads/
 *.log
+
+# Local backups that are never part of the repository
+_backup/
+
+# Environment & secrets (only the placeholder template is committed)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Frontend tooling
+frontend/coverage/
+*.tsbuildinfo
+
+# IDE / OS
 .idea/
 .vscode/
 *.iml

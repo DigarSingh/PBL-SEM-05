@@ -1,0 +1,104 @@
+name: shopsmart
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: shopsmart
+      MYSQL_USER: ${DATABASE_USERNAME:-shopsmart}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      TZ: UTC
+    command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci", "--default-time-zone=+00:00" ]
+    ports:
+      - "127.0.0.1:${MYSQL_HOST_PORT:-3307}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$${MYSQL_ROOT_PASSWORD}\" --silent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  mailpit:
+    image: axllent/mailpit:v1.31
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      # dev = seeded demo data + Swagger UI; use prod for a real deployment (see DEPLOYMENT.md).
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      DATABASE_URL: jdbc:mysql://mysql:3306/shopsmart?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-shopsmart}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-15m}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-7d}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+      # Defaults route mail to local Mailpit. Set these in .env for a real SMTP provider.
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
+      MAIL_STARTTLS: ${MAIL_STARTTLS:-false}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@shopsmart.example}
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_API_KEY: ${AI_SERVICE_API_KEY:?Set AI_SERVICE_API_KEY in .env}
+      FRONTEND_URL: ${PUBLIC_URL:-http://localhost:3000}
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_URL:-http://localhost:3000}
+      SEED_ENABLED: ${SEED_ENABLED:-true}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@shopsmart.test}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_CUSTOMER_PASSWORD: ${SEED_CUSTOMER_PASSWORD:-}
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"
+
+  ai-service:
+    build:
+      context: ./ai-service
+      args:
+        WITH_EMBEDDINGS: ${AI_WITH_EMBEDDINGS:-true}
+        EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8080
+      AI_SERVICE_API_KEY: ${AI_SERVICE_API_KEY:?Set AI_SERVICE_API_KEY in .env}
+      EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-auto}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      REFRESH_INTERVAL_SECONDS: ${AI_REFRESH_INTERVAL_SECONDS:-120}
+      INTERACTION_DAYS: ${AI_INTERACTION_DAYS:-180}
+      BACKEND_TIMEOUT_SECONDS: ${AI_BACKEND_TIMEOUT_SECONDS:-10}
+    # Not published: only the backend talks to it (and it pulls data from the backend).
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_HOST_PORT:-3000}:8080"
+
+volumes:
+  mysql-data:
+  uploads:
